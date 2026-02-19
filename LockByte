@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cyber Password Strength Checker</title>
+
+<style>
+/* ===============================
+   CYBER SECURITY THEME STYLING
+=================================*/
+
+body {
+    margin: 0;
+    font-family: 'Segoe UI', sans-serif;
+    background: #0f0f1a;
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+}
+
+.container {
+    background: #161625;
+    padding: 30px;
+    width: 95%;
+    max-width: 500px;
+    border-radius: 15px;
+    box-shadow: 0 0 20px #00f0ff;
+}
+
+h1 {
+    text-align: center;
+    color: #00f0ff;
+    margin-bottom: 20px;
+}
+
+/* Input Field */
+.input-group {
+    position: relative;
+}
+
+input {
+    width: 100%;
+    padding: 12px;
+    border-radius: 8px;
+    border: none;
+    outline: none;
+    font-size: 16px;
+}
+
+/* Buttons */
+button {
+    margin-top: 10px;
+    padding: 10px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.btn-primary {
+    background: #00f0ff;
+    color: black;
+}
+
+.btn-secondary {
+    background: #ff00c8;
+    color: white;
+}
+
+button:hover {
+    opacity: 0.8;
+}
+
+/* Progress Bar */
+.progress {
+    height: 10px;
+    width: 100%;
+    background: #333;
+    border-radius: 10px;
+    margin-top: 10px;
+}
+
+.progress-bar {
+    height: 10px;
+    width: 0%;
+    border-radius: 10px;
+    transition: 0.4s;
+}
+
+/* Strength Text */
+#strengthText {
+    margin-top: 8px;
+    font-weight: bold;
+}
+
+/* Info Section */
+.info-section {
+    margin-top: 30px;
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+.info-section h3 {
+    color: #00f0ff;
+}
+
+/* Responsive */
+@media(max-width: 500px) {
+    .container {
+        padding: 20px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+    <h1>🔐 Password Strength Checker</h1>
+
+    <div class="input-group">
+        <input type="password" id="password" placeholder="Enter your password">
+    </div>
+
+    <button class="btn-primary" onclick="togglePassword()">Show / Hide</button>
+    <button class="btn-secondary" onclick="generatePassword()">Generate Strong Password</button>
+    <button class="btn-primary" onclick="copyPassword()">Copy to Clipboard</button>
+
+    <div class="progress">
+        <div class="progress-bar" id="progressBar"></div>
+    </div>
+
+    <div id="strengthText"></div>
+
+    <!-- Explanation Section -->
+    <div class="info-section">
+        <h3>How to Create a Strong Password?</h3>
+        <ul>
+            <li>Use minimum 8–12 characters</li>
+            <li>Mix uppercase and lowercase letters</li>
+            <li>Add numbers and special characters</li>
+            <li>Avoid using name, date of birth, or common words</li>
+            <li>Do not reuse passwords on multiple sites</li>
+        </ul>
+
+        <h3>Why Password Security is Important?</h3>
+        <p>
+        In cyber security, your password is the first line of defense.
+        If your password is weak, hackers can easily guess or brute-force it.
+        A strong password protects your personal data, bank accounts,
+        social media, and online identity.
+        </p>
+
+        <p>
+        Simple rule: Think like a hacker. If it is easy to guess,
+        it is easy to hack.
+        </p>
+    </div>
+
+</div>
+
+<script>
+/* ======================================
+   PASSWORD STRENGTH CHECKER LOGIC
+======================================*/
+
+const passwordInput = document.getElementById("password");
+const progressBar = document.getElementById("progressBar");
+const strengthText = document.getElementById("strengthText");
+
+// Check password strength on typing
+passwordInput.addEventListener("input", checkStrength);
+
+function checkStrength() {
+    const password = passwordInput.value;
+    let strength = 0;
+
+    // Length check
+    if (password.length >= 8) strength++;
+
+    // Lowercase
+    if (/[a-z]/.test(password)) strength++;
+
+    // Uppercase
+    if (/[A-Z]/.test(password)) strength++;
+
+    // Numbers
+    if (/[0-9]/.test(password)) strength++;
+
+    // Special characters
+    if (/[^A-Za-z0-9]/.test(password)) strength++;
+
+    // Update UI
+    if (strength <= 2) {
+        progressBar.style.width = "33%";
+        progressBar.style.background = "red";
+        strengthText.innerText = "Strength: Weak";
+        strengthText.style.color = "red";
+    }
+    else if (strength <= 4) {
+        progressBar.style.width = "66%";
+        progressBar.style.background = "orange";
+        strengthText.innerText = "Strength: Medium";
+        strengthText.style.color = "orange";
+    }
+    else {
+        progressBar.style.width = "100%";
+        progressBar.style.background = "lime";
+        strengthText.innerText = "Strength: Strong";
+        strengthText.style.color = "lime";
+    }
+}
+
+// Show / Hide Password
+function togglePassword() {
+    if (passwordInput.type === "password") {
+        passwordInput.type = "text";
+    } else {
+        passwordInput.type = "password";
+    }
+}
+
+// Generate Strong Password
+function generatePassword() {
+    const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()";
+    let generatedPassword = "";
+    for (let i = 0; i < 12; i++) {
+        generatedPassword += chars.charAt(Math.floor(Math.random() * chars.length));
+    }
+    passwordInput.value = generatedPassword;
+    checkStrength();
+}
+
+// Copy to Clipboard
+function copyPassword() {
+    navigator.clipboard.writeText(passwordInput.value);
+    alert("Password Copied!");
+}
+</script>
+
+</body>
+</html>
